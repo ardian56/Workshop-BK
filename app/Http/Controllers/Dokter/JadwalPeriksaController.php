@@ -13,10 +13,8 @@ class JadwalPeriksaController extends Controller
 {
     public function index()
     {
-        // Mengambil jadwal periksa yang dibuat oleh dokter yang sedang login
-        // Asumsi: user yang login adalah dokter dan id_dokter di tabel jadwal_periksas adalah id user
         $jadwalPeriksas = JadwalPeriksa::where('id_dokter', Auth::id())
-                                    ->get() // Tambahkan ->get() di sini untuk mendapatkan Collection
+                                    ->get()
                                     ->sortBy(function($schedule) {
                                         $daysOrder = [
                                             'Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4,
@@ -42,6 +40,12 @@ class JadwalPeriksaController extends Controller
             'status' => 'required|boolean',
         ]);
 
+        if ($request->status == true) {
+            JadwalPeriksa::where('id_dokter', Auth::id())
+                         ->where('status', true)
+                         ->update(['status' => false]);
+        }
+
         JadwalPeriksa::create([
             'id_dokter' => Auth::id(),
             'hari' => $request->hari,
@@ -55,7 +59,16 @@ class JadwalPeriksaController extends Controller
 
     public function toggleStatus(Request $request, $id)
     {
-        $jadwalPeriksa = JadwalPeriksa::where('id', $id)->where('id_dokter', Auth::id())->firstOrFail();
+        $jadwalPeriksa = JadwalPeriksa::where('id', $id)
+                                      ->where('id_dokter', Auth::id())
+                                      ->firstOrFail();
+
+        if (!$jadwalPeriksa->status) { 
+            JadwalPeriksa::where('id_dokter', Auth::id())
+                         ->where('id', '!=', $jadwalPeriksa->id)
+                         ->where('status', true) 
+                         ->update(['status' => false]);
+        }
 
         $jadwalPeriksa->status = !$jadwalPeriksa->status;
         $jadwalPeriksa->save();

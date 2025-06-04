@@ -35,7 +35,6 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col" class="text-center font-bold text-gray-700 whitespace-nowrap">No</th>
-                                    <th scope="col" class="text-center font-bold text-gray-700 whitespace-nowrap">Dokter</th> {{-- Tambah kolom Dokter --}}
                                     <th scope="col" class="text-center font-bold text-gray-700 whitespace-nowrap">Hari</th>
                                     <th scope="col" class="text-center font-bold text-gray-700 whitespace-nowrap">Jam Mulai</th>
                                     <th scope="col" class="text-center font-bold text-gray-700 whitespace-nowrap">Jam Selesai</th>
@@ -47,7 +46,6 @@
                                 @foreach ($jadwalPeriksas as $jadwalPeriksa) {{-- Menggunakan $jadwalPeriksas dan $jadwalPeriksa --}}
                                     <tr class="align-middle hover:bg-blue-50 transition border-b border-blue-100">
                                         <th scope="row" class="text-center text-gray-700 whitespace-nowrap">{{ $loop->iteration }}</th>
-                                        <td class="text-center font-semibold text-black whitespace-nowrap">{{ $jadwalPeriksa->dokter->nama ?? 'N/A' }}</td> {{-- Menampilkan nama dokter --}}
                                         <td class="text-center font-semibold text-black whitespace-nowrap">{{ $jadwalPeriksa->hari }}</td>
                                         <td class="text-center whitespace-nowrap">{{ \Carbon\Carbon::parse($jadwalPeriksa->jam_mulai)->format('H:i') }}</td>
                                         <td class="text-center whitespace-nowrap">{{ \Carbon\Carbon::parse($jadwalPeriksa->jam_selesai)->format('H:i') }}</td>
@@ -61,7 +59,7 @@
                                             <form action="{{ route('dokter.jadwalperiksa.toggleStatus', $jadwalPeriksa->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PATCH') {{-- Menggunakan PATCH --}}
-                                                <button type="submit" class="btn btn-sm {{ $jadwalPeriksa->status ? 'btn-outline-secondary' : 'btn-outline-success' }} rounded-full px-4 py-1 shadow-sm transition-all duration-150 hover:scale-105 w-full sm:w-auto text-white {{ $jadwalPeriksa->status ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600' }}">
+                                                <button type="submit" class="btn btn-sm {{ $jadwalPeriksa->status ? 'btn-outline-danger' : 'btn-outline-success' }} rounded-full px-4 py-1 shadow-sm transition-all duration-150 hover:scale-105 w-full sm:w-auto text-white {{ $jadwalPeriksa->status ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600' }}">
                                                     {{ $jadwalPeriksa->status ? 'Nonaktifkan' : 'Aktifkan' }}
                                                 </button>
                                             </form>
@@ -71,7 +69,7 @@
 
                                 @if ($jadwalPeriksas->isEmpty()) {{-- Menggunakan $jadwalPeriksas --}}
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted py-3"> {{-- colspan disesuaikan --}}
+                                        <td colspan="6" class="text-center text-muted py-3"> {{-- colspan disesuaikan --}}
                                             Belum ada jadwal periksa.
                                         </td>
                                     </tr>

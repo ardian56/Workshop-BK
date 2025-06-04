@@ -14,7 +14,7 @@
                             {{ __('Daftar Obat') }}
                         </h2>
                         <div class="flex-col items-center justify-center text-center">
-                            <a href="{{ route('dokter.obat.create') }}" class="btn btn-primary">Tambah Obat</a>
+                            <a href="{{ route('dokter.obat.create') }}" class="btn btn-primary rounded-full">Tambah Obat</a>
 
                             @if (session('status') === 'obat-created')
                                 <p
@@ -57,7 +57,7 @@
                                     </td>
                                     <td class="flex items-center gap-3">
                                         {{-- Button Edit --}}
-                                        <a href="{{ route('dokter.obat.edit', $obat->id) }}" class="btn btn-secondary btn-sm">
+                                        <a href="{{ route('dokter.obat.edit', $obat->id) }}" class="btn btn-secondary btn-sm rounded-full">
                                             Edit
                                         </a>
 
@@ -65,7 +65,7 @@
                                         <form action="{{ route('dokter.obat.destroy', $obat->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
+                                            <button type="submit" class="btn btn-danger btn-sm rounded-full">
                                                 Delete
                                             </button>
                                         </form>

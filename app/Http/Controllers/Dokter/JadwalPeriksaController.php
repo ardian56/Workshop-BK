@@ -11,15 +11,10 @@ use Illuminate\Support\Facades\Auth;
 
 class JadwalPeriksaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        // Mengambil jadwal periksa yang dibuat oleh dokter yang sedang login
-        // Asumsi: user yang login adalah dokter dan id_dokter di tabel jadwal_periksas adalah id user
         $jadwalPeriksas = JadwalPeriksa::where('id_dokter', Auth::id())
-                                    ->get() // Dapatkan koleksi sebelum sortBy
+                                    ->get()
                                     ->sortBy(function($schedule) {
                                         $daysOrder = [
                                             'Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4,
@@ -28,34 +23,47 @@ class JadwalPeriksaController extends Controller
                                         return $daysOrder[$schedule->hari] . $schedule->jam_mulai;
                                     });
 
-        // Menggunakan with() seperti contoh ObatController
         return view('dokter.jadwalperiksa.index')->with([
             'jadwalPeriksas' => $jadwalPeriksas,
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        // Tidak perlu mengambil daftar dokter, karena jadwal akan otomatis dikaitkan dengan user yang login
         return view('dokter.jadwalperiksa.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'hari' => 'required|string|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
-            'jam_mulai' => 'required|date_format:H:i',
+            'jam_mulai' => [
+                'required',
+                'date_format:H:i',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->status == true) {
+                        $newStartTime = Carbon::parse($value);
+                        $newEndTime = Carbon::parse($request->jam_selesai);
+
+                        $overlappingSchedules = JadwalPeriksa::where('id_dokter', Auth::id())
+                            ->where('hari', $request->hari)
+                            ->where('status', true)
+                            ->where(function ($query) use ($newStartTime, $newEndTime) {
+                                $query->where('jam_mulai', '<', $newEndTime)
+                                      ->where('jam_selesai', '>', $newStartTime);
+                            })
+                            ->count();
+
+                        if ($overlappingSchedules > 0) {
+                            $fail('Jadwal yang Anda masukkan bertabrakan dengan jadwal aktif lainnya pada hari yang sama.');
+                        }
+                    }
+                },
+            ],
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
             'status' => 'required|boolean',
         ]);
 
-        // Jika jadwal baru diaktifkan, nonaktifkan jadwal lain untuk dokter ini
         if ($request->status == true) {
             JadwalPeriksa::where('id_dokter', Auth::id())
                          ->where('status', true)
@@ -63,52 +71,64 @@ class JadwalPeriksaController extends Controller
         }
 
         JadwalPeriksa::create([
-            'id_dokter' => Auth::id(), // Mengambil ID user yang sedang login secara otomatis
+            'id_dokter' => Auth::id(),
             'hari' => $request->hari,
             'jam_mulai' => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
-            'status' => $request->status, // Menggunakan status dari input form
+            'status' => $request->status,
         ]);
 
-        // Menggunakan with('status') seperti contoh ObatController
         return redirect()->route('dokter.jadwalperiksa.index')->with('status', 'jadwalperiksa-created');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        // Cari jadwal periksa berdasarkan ID dan pastikan itu milik dokter yang login
         $jadwalPeriksa = JadwalPeriksa::where('id', $id)
                                       ->where('id_dokter', Auth::id())
                                       ->firstOrFail();
 
-        // Menggunakan with() seperti contoh ObatController
         return view('dokter.jadwalperiksa.edit')->with([
             'jadwalPeriksa' => $jadwalPeriksa,
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        // Cari jadwal periksa berdasarkan ID dan pastikan itu milik dokter yang login
         $jadwalPeriksa = JadwalPeriksa::where('id', $id)
                                       ->where('id_dokter', Auth::id())
                                       ->firstOrFail();
 
         $request->validate([
             'hari' => 'required|string|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
-            'jam_mulai' => 'required|date_format:H:i',
+            'jam_mulai' => [
+                'required',
+                'date_format:H:i',
+                function ($attribute, $value, $fail) use ($request, $id) {
+                    if ($request->status == true) {
+                        $newStartTime = Carbon::parse($value);
+                        $newEndTime = Carbon::parse($request->jam_selesai);
+
+                        $overlappingSchedules = JadwalPeriksa::where('id_dokter', Auth::id())
+                            ->where('id', '!=', $id)
+                            ->where('hari', $request->hari)
+                            ->where('status', true)
+                            ->where(function ($query) use ($newStartTime, $newEndTime) {
+                                $query->where('jam_mulai', '<', $newEndTime)
+                                      ->where('jam_selesai', '>', $newStartTime);
+                            })
+                            ->count();
+
+                        if ($overlappingSchedules > 0) {
+                            $fail('Jadwal yang Anda masukkan bertabrakan dengan jadwal aktif lainnya pada hari yang sama.');
+                        }
+                    }
+                },
+            ],
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
             'status' => 'required|boolean',
         ]);
 
-        // Jika jadwal ini akan diaktifkan, nonaktifkan jadwal lain untuk dokter ini
-        if ($request->status == true && !$jadwalPeriksa->status) { // Hanya jika status berubah dari nonaktif ke aktif
+        if ($request->status == true && !$jadwalPeriksa->status) {
             JadwalPeriksa::where('id_dokter', Auth::id())
                          ->where('id', '!=', $jadwalPeriksa->id)
                          ->where('status', true)
@@ -122,27 +142,20 @@ class JadwalPeriksaController extends Controller
             'status' => $request->status,
         ]);
 
-        // Menggunakan with('status') seperti contoh ObatController
         return redirect()->route('dokter.jadwalperiksa.index')->with('status', 'jadwalperiksa-updated');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        // Cari jadwal periksa berdasarkan ID dan pastikan itu milik dokter yang login
         $jadwalPeriksa = JadwalPeriksa::where('id', $id)
                                       ->where('id_dokter', Auth::id())
                                       ->firstOrFail();
 
         $jadwalPeriksa->delete();
 
-        // Menggunakan redirect tanpa with('status') seperti contoh ObatController
-        return redirect()->route('dokter.jadwalperiksa.index');
+        return redirect()->route('dokter.jadwalperiksa.index')->with('status', 'jadwalperiksa-deleted');
     }
 
-    // Metode toggleStatus tetap ada karena ini spesifik untuk jadwal
     public function toggleStatus(Request $request, string $id)
     {
         $jadwalPeriksa = JadwalPeriksa::where('id', $id)

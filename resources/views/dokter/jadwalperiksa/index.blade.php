@@ -73,7 +73,7 @@
                                         <td class="text-center whitespace-nowrap">
                                                 {{-- Tombol Edit --}}
                                                 <a href="{{ route('dokter.jadwalperiksa.edit', $jadwalPeriksa->id) }}"
-                                                    class="btn btn-warning">
+                                                    class="btn btn-warning rounded-full">
                                                     Edit
                                                 </a>
 
@@ -82,7 +82,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                        class="btn btn-danger">
+                                                        class="btn btn-danger rounded-full">
                                                         Hapus
                                                     </button>
                                                 </form>

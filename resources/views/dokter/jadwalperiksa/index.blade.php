@@ -9,7 +9,7 @@
         <div class="mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
             <div class="p-4 bg-white shadow-sm sm:p-8 sm:rounded-lg">
                 <section>
-                    <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                    <header class="flex items-center justify-between">
                         <h2 class="text-lg font-medium text-gray-900">
                             {{ __('Daftar Jadwal Periksa') }}
                         </h2>

@@ -31,6 +31,9 @@
                         <x-nav-link :href="route('pasien.dashboard')" :active="request()->routeIs('pasien.dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('pasien.janjiperiksa.index')" :active="request()->routeIs('pasien.janjiperiksa.index')">
+                            {{ __('Janji Periksa') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -88,9 +91,18 @@
                 <x-responsive-nav-link :href="route('dokter.dashboard')" :active="request()->routeIs('dokter.dashboard')">
                     {{ __('Dashboard') }}
                 </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('dokter.obat.index')" :active="request()->routeIs('dokter.obat.index')">
+                    {{ __('Obat') }}
+                </x--responsive-nav-link>
+                <x-responsive-nav-link :href="route('dokter.jadwalperiksa.index')" :active="request()->routeIs('dokter.jadwalperiksa.index')">
+                    {{ __('Jadwal Periksa') }}
+                </x-responsive-nav-link>
             @elseif(Auth::user()->role == 'pasien')
                 <x-responsive-nav-link :href="route('pasien.dashboard')" :active="request()->routeIs('pasien.dashboard')">
                     {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('pasien.janjiperiksa.index')" :active="request()->routeIs('pasien.janjiperiksa.index')">
+                    {{ __('Janji Periksa') }}
                 </x-responsive-nav-link>
             @endif
         </div>

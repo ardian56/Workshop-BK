@@ -18,7 +18,7 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
         Route::delete('/{id}', [ObatController::class, 'destroy'])->name('dokter.obat.destroy');
     });
 
-     Route::prefix('jadwalperiksa')->group(function () {
+    Route::prefix('jadwalperiksa')->group(function () {
         Route::get('/', [JadwalPeriksaController::class, 'index'])->name('dokter.jadwalperiksa.index');
         Route::get('/create', [JadwalPeriksaController::class, 'create'])->name('dokter.jadwalperiksa.create');
         Route::post('/', [JadwalPeriksaController::class, 'store'])->name('dokter.jadwalperiksa.store');
@@ -26,5 +26,11 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
         Route::patch('/{id}', [JadwalPeriksaController::class, 'update'])->name('dokter.jadwalperiksa.update'); 
         Route::delete('/{id}', [JadwalPeriksaController::class, 'destroy'])->name('dokter.jadwalperiksa.destroy');
         Route::patch('/{id}/toggle-status', [JadwalPeriksaController::class, 'toggleStatus'])->name('dokter.jadwalperiksa.toggleStatus');
+    });
+
+    Route::prefix('memeriksa')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Dokter\MemeriksaController::class, 'index'])->name('dokter.memeriksa.index');
+        Route::get('/{janji}/create', [\App\Http\Controllers\Dokter\MemeriksaController::class, 'create'])->name('dokter.memeriksa.create');
+        Route::post('/', [\App\Http\Controllers\Dokter\MemeriksaController::class, 'store'])->name('dokter.memeriksa.store');
     });
 });

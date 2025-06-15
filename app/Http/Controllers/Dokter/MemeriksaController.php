@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Dokter;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\JanjiPeriksa;
-
+use App\Models\Periksa;
+use App\Models\DetailPeriksa;
 use App\Models\Obat;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,19 +42,29 @@ class MemeriksaController extends Controller
         $biaya_pemeriksaan = 100000;
 
         $total_harga_obat = 0;
-        if (!empty($validated['obat_ids'])) {
-            $total_harga_obat = \App\Models\Obat::whereIn('id', $validated['obat_ids'])->sum('harga');
+        $selectedObatIds = array_filter($validated['obat_ids'] ?? []);
+
+        if (!empty($selectedObatIds)) {
+            $total_harga_obat = Obat::whereIn('id', $selectedObatIds)->sum('harga');
         }
 
         $total_biaya = $biaya_pemeriksaan + $total_harga_obat;
 
-        $periksa = \App\Models\Periksa::create([
+        $periksa = Periksa::create([
             'id_janji_periksa' => $validated['id_janji_periksa'],
             'tgl_periksa' => $validated['tgl_periksa'],
             'catatan' => $validated['catatan'],
             'biaya_periksa' => $total_biaya,
         ]);
 
+        if (!empty($selectedObatIds)) {
+            foreach ($selectedObatIds as $obatId) {
+                DetailPeriksa::create([
+                    'id_periksa' => $periksa->id,
+                    'id_obat' => $obatId,
+                ]);
+            }
+        }
         return redirect()->route('dokter.memeriksa.index')->with('status', 'Pemeriksaan berhasil dibuat.');
     }
 }

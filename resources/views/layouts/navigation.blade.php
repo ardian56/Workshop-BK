@@ -37,6 +37,9 @@
                         <x-nav-link :href="route('pasien.janjiperiksa.index')" :active="request()->routeIs('pasien.janjiperiksa.index')">
                             {{ __('Janji Periksa') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('pasien.riwayatperiksa.index')" :active="request()->routeIs('pasien.riwayatperiksa.index')">
+                            {{ __('Riwayat Periksa') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>

@@ -30,7 +30,7 @@
                                         <div class="form-control-plaintext">
                                             {{-- FIX 1: Check if periksa is not null --}}
                                             @if ($janjiPeriksa->periksa)
-                                                {{ \Carbon\Carbon::parse($janjiPeriksa->periksa->tgl_periksa)->translatedFormat('d F Y H.i') }}
+                                                {{ \Carbon\Carbon::parse($janjiPeriksa->periksa->tgl_periksa)->translatedFormat('d F Y') }}
                                             @else
                                                 <span class="text-muted">Tanggal tidak tersedia</span>
                                             @endif

@@ -5,16 +5,15 @@ namespace App\Http\Controllers\Dokter;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\JanjiPeriksa;
-use App\Models\Periksa;
-use App\Models\DetailPeriksa;
-use App\Models\Obat;
 use Illuminate\Support\Facades\Auth;
+
+use App\Models\Obat;
 
 class MemeriksaController extends Controller
 {
     public function index()
     {
-        $janjis = JanjiPeriksa::with(['pasien', 'jadwalPeriksa'])
+        $janjis = JanjiPeriksa::with(['pasien', 'jadwalPeriksa.dokter'])
             ->whereHas('jadwalPeriksa', function ($query) {
                 $query->where('id_dokter', Auth::id());
             })
@@ -42,29 +41,27 @@ class MemeriksaController extends Controller
         $biaya_pemeriksaan = 100000;
 
         $total_harga_obat = 0;
-        $selectedObatIds = array_filter($validated['obat_ids'] ?? []);
-
-        if (!empty($selectedObatIds)) {
-            $total_harga_obat = Obat::whereIn('id', $selectedObatIds)->sum('harga');
+        if (!empty($validated['obat_ids'])) {
+            $total_harga_obat = \App\Models\Obat::whereIn('id', $validated['obat_ids'])->sum('harga');
         }
 
         $total_biaya = $biaya_pemeriksaan + $total_harga_obat;
 
-        $periksa = Periksa::create([
+        $periksa = \App\Models\Periksa::create([
             'id_janji_periksa' => $validated['id_janji_periksa'],
             'tgl_periksa' => $validated['tgl_periksa'],
             'catatan' => $validated['catatan'],
             'biaya_periksa' => $total_biaya,
         ]);
-
-        if (!empty($selectedObatIds)) {
-            foreach ($selectedObatIds as $obatId) {
-                DetailPeriksa::create([
-                    'id_periksa' => $periksa->id,
-                    'id_obat' => $obatId,
-                ]);
-            }
+        if (!empty($validated['obat_ids'])) {
+        foreach ($validated['obat_ids'] as $obat_id) {
+            \App\Models\DetailPeriksa::create([
+                'id_periksa' => $periksa->id,
+                'id_obat' => $obat_id,
+            ]);
         }
-        return redirect()->route('dokter.memeriksa.index')->with('status', 'Pemeriksaan berhasil dibuat.');
     }
+
+        return redirect()->route('dokter.memeriksa.index')->with('status', 'Pemeriksaan berhasil dibuat.');
+}
 }

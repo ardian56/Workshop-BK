@@ -33,4 +33,5 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
         Route::get('/{janji}/create', [\App\Http\Controllers\Dokter\MemeriksaController::class, 'create'])->name('dokter.memeriksa.create');
         Route::post('/', [\App\Http\Controllers\Dokter\MemeriksaController::class, 'store'])->name('dokter.memeriksa.store');
     });
-});
+
+   });

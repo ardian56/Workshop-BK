@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\Poli;
 
 class ProfileController extends Controller
 {
@@ -16,8 +17,10 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $poli = Poli::all();
         return view('profile.edit', [
             'user' => $request->user(),
+            'poli' => $poli,
         ]);
     }
 
@@ -26,7 +29,13 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+         $user = $request->user();
+         
         $request->user()->fill($request->validated());
+
+          if ($user->role === 'dokter') {
+        $user->id_poli = $request->input('id_poli');
+        }
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;

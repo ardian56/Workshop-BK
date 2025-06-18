@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             PeriksaSeeder::class,
             DetailPeriksaSeeder::class,
             DokterSeeder::class,
+            PoliSeeder::class,
        ]);
     }
 }

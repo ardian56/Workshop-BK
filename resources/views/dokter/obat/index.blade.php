@@ -15,6 +15,9 @@
                         </h2>
                         <div class="flex-col items-center justify-center text-center">
                             <a href="{{ route('dokter.obat.create') }}" class="btn btn-primary rounded-full">Tambah Obat</a>
+                             <a href="{{ route('dokter.obat.trash') }}" class="btn btn-primary w-full sm:w-auto bg-red-400 hover:bg-red-500 rounded-full">
+                                Trash
+                            </a>
 
                             @if (session('status') === 'obat-created')
                                 <p

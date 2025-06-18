@@ -24,7 +24,7 @@
                             @csrf
                             <div class="form-group">
                                 <label for="formGroupExampleInput">Nomor Rekam Medis</label>
-                                <input type="text" class="rounded form-control" id="formGroupExampleInput"
+                                 <input type="text" class="rounded form-control" id="formGroupExampleInput"
                                     placeholder="Example input" value="{{$no_rm}}" readonly>
                             </div>
                             <div class="form-group">
@@ -32,9 +32,11 @@
                                 <select class="form-control" id="dokterSelect" name="id_jadwal_periksa" required>
                                     <option>Pilih Dokter</option>
                                     @foreach ($dokters as $dokter)
-                                    @foreach ($dokter->jadwalPeriksas as $jadwalperiksa)
-                                    <option value="{{$jadwalperiksa->id}}">{{$dokter->nama}} - Spesialis {{$dokter->poli}} | {{$jadwalperiksa->hari}}, {{$jadwalperiksa->jam_mulai}} - {{$jadwalperiksa->jam_selesai}}</option>
-                                    @endforeach
+                                        @foreach ($dokter->jadwalPeriksas as $jadwal)
+                                            <option value={{ $jadwal->id }}>
+                                                {{ $dokter->nama}} - Spesialis {{ $dokter->poli->nama_poli }} | {{ $jadwal->hari }} - {{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}
+                                            </option>
+                                        @endforeach
                                     @endforeach
                                 </select>
                             </div>

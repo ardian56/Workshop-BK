@@ -17,6 +17,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::patch('/dokter/memeriksa/{janji}/toggle-status', [\App\Http\Controllers\Dokter\MemeriksaController::class, 'toggleStatus'])->name('dokter.memeriksa.toggle-status');
+Route::get('/dokter/obat/trash', [\App\Http\Controllers\Dokter\ObatController::class, 'trash'])->name('dokter.obat.trash');
+Route::post('/dokter/obat/{id}/restore', [\App\Http\Controllers\Dokter\ObatController::class, 'restore'])->name('dokter.obat.restore');
+
 require __DIR__.'/auth.php';
 require __DIR__.'/pasien.php';
 require __DIR__.'/dokter.php';

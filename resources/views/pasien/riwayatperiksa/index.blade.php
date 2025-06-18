@@ -35,7 +35,7 @@
                                 <tr>
                                     <th scope="row" class="align-middle text-start">{{ $loop->iteration }}</th>
                                     <td class="align-middle text-start">
-                                        {{ $janjiPeriksa->jadwalPeriksa->dokter->poli }}</td>
+                                        {{ $janjiPeriksa->jadwalPeriksa->dokter->poli->nama_poli ?? 'Tidak ada poli' }}</td>
                                     <td class="align-middle text-start">
                                         {{ $janjiPeriksa->jadwalPeriksa->dokter->nama }}</td>
                                     <td class="align-middle text-start">{{ $janjiPeriksa->jadwalPeriksa->hari }}</td>
@@ -47,24 +47,24 @@
                                     </td>
                                     <td class="align-middle text-start">{{ $janjiPeriksa->no_antrian }}</td>
                                     <td class="align-middle text-start">
-                                        @if (is_null($janjiPeriksa->periksa))
+                                        {{-- HERE IS THE FIX --}}
+                                        @if ($janjiPeriksa->periksa === null)
                                             <span class="badge badge-pill badge-warning">Belum Diperiksa</span>
                                         @else
                                             <span class="badge badge-pill badge-success">Sudah Diperiksa</span>
                                         @endif
                                     </td>
                                     <td class="align-middle text-start">
-                                        @if (is_null($janjiPeriksa->periksa))
+                                        {{-- AND HERE IS THE FIX --}}
+                                        @if ($janjiPeriksa->periksa === null)
                                             <a href="{{route('pasien.riwayatperiksa.detail', $janjiPeriksa->id)}}" class="btn btn-info">Detail</a>
 
-                                            <!-- Modal -->
                                             <div class="modal fade bd-example-modal-lg" id="detailModal{{ $janjiPeriksa->id }}" tabindex="-1"
                                                 role="dialog" aria-labelledby="detailModalTitle{{ $janjiPeriksa->id }}" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg modal-dialog-centered"
                                                     role="document">
                                                     <div class="modal-content">
 
-                                                        <!-- Modal Header -->
                                                         <div class="modal-header">
                                                             <h5 class="modal-title font-weight-bold"
                                                                 id="riwayatModalLabel{{ $janjiPeriksa->id }}">
@@ -76,16 +76,15 @@
                                                             </button>
                                                         </div>
 
-                                                        <!-- Modal Body -->
                                                         <div class="modal-body">
                                                             <ul class="list-group">
                                                                 <li class="list-group-item">
                                                                     <strong>Poliklinik:</strong>
-                                                                    {{ $janjiPeriksa->jadwalPeriksa->dokter->poli }}
+                                                                    {{ $janjiPeriksa->jadwalPeriksa->dokter->poli->nama_poli ?? 'Tidak ada poli' }}
                                                                 </li>
                                                                 <li class="list-group-item">
                                                                     <strong>Nama Dokter:</strong>
-                                                                    {{ $janjiPeriksa->jadwalPeriksa->dokter->nama }}
+                                                                    {{ $janjiPeriksa->jadwalPeriksa->dokter->name }}
                                                                 </li>
                                                                 <li class="list-group-item">
                                                                     <strong>Hari Pemeriksaan:</strong>
@@ -101,7 +100,6 @@
                                                                 </li>
                                                             </ul>
 
-                                                            <!-- Highlight Nomor Antrian -->
                                                             <div class="mt-4 text-center">
                                                                 <div class="mb-2 h5 font-weight-bold">Nomor Antrian Anda
                                                                 </div>
@@ -112,7 +110,6 @@
                                                             </div>
                                                         </div>
 
-                                                        <!-- Modal Footer -->
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-dismiss="modal">

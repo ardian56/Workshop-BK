@@ -34,7 +34,7 @@
                                             <div class="d-flex justify-content-between">
                                                 <span class="text-gray-700">Nama Dokter</span>
                                                 <span
-                                                    class="font-medium">{{ $janjiPeriksa->jadwalPeriksa->dokter->nama }}</span>
+                                                    class="font-medium">{{ $janjiPeriksa->jadwalPeriksa->dokter->name }}</span>
                                             </div>
                                         </div>
                                         <div class="px-4 py-3 mb-2 border-0 rounded list-group-item bg-light">

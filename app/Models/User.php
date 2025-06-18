@@ -39,6 +39,11 @@ class User extends Authenticatable
         return $this->hasMany(JanjiPeriksa::class, 'id_pasien');
     }
 
+      public function poli()
+    {
+        return $this->belongsTo(Poli::class, 'id_poli');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

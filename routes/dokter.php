@@ -32,6 +32,7 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
         Route::get('/', [\App\Http\Controllers\Dokter\MemeriksaController::class, 'index'])->name('dokter.memeriksa.index');
         Route::get('/{janji}/create', [\App\Http\Controllers\Dokter\MemeriksaController::class, 'create'])->name('dokter.memeriksa.create');
         Route::post('/', [\App\Http\Controllers\Dokter\MemeriksaController::class, 'store'])->name('dokter.memeriksa.store');
+        Route::get('/dokter/memeriksa/{janji}/edit', [\App\Http\Controllers\Dokter\MemeriksaController::class, 'edit'])->name('dokter.memeriksa.edit');
     });
 
    });

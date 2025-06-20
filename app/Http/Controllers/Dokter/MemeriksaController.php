@@ -17,7 +17,7 @@ class MemeriksaController extends Controller
             ->whereHas('jadwalPeriksa', function ($query) {
                 $query->where('id_dokter', Auth::id());
             })
-            ->whereDoesntHave('periksa')
+            // ->whereDoesntHave('periksa')
             ->get();
         return view('dokter.memeriksa.index', compact('janjis'));
     }
@@ -63,5 +63,19 @@ class MemeriksaController extends Controller
     }
 
         return redirect()->route('dokter.memeriksa.index')->with('status', 'Pemeriksaan berhasil dibuat.');
-}
+    }
+
+     public function edit(JanjiPeriksa $janji)
+    {
+
+        $janji->load(['periksa.detailPeriksa.obat']);
+
+        $obats = Obat::all(); // Semua obat yang tersedia
+
+        if (!$janji->periksa) {
+            return redirect()->route('dokter.memeriksa.index')->with('error', 'Pemeriksaan belum dilakukan untuk janji ini.');
+        }
+
+        return view('dokter.memeriksa.edit', compact('janji', 'obats'));
+    }
 }

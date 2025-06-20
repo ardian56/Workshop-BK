@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password123'),
             'alamat' => 'Jl. Merdeka No. 10, Jakarta',
             'no_ktp' => '3210000000000001',
+            'no_rm' => 'RM123456',
             'no_hp' => '081234567890',
             ],
             [
@@ -31,6 +32,7 @@ class UserSeeder extends Seeder
             'alamat' => 'Jl. Pahlawan No. 5, Bandung',
             'no_ktp' => '3210000000000002',
             'no_hp' => '081234567891',
+            'no_rm' => 'RM123091',
             'password' => Hash::make('password123'),
             ],
         ];

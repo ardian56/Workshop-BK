@@ -33,9 +33,9 @@
                                     <option>Pilih Dokter</option>
                                     @foreach ($dokters as $dokter)
                                         @foreach ($dokter->jadwalPeriksas as $jadwal)
-                                            <option value={{ $jadwal->id }}>
-                                                {{ $dokter->nama}} - Spesialis {{ $dokter->poli->nama_poli }} | {{ $jadwal->hari }} - {{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}
-                                            </option>
+                                         <option value={{ $jadwal->id }}>
+                                            {{ $dokter->nama }} - Spesialis {{ $dokter->poli?->nama_poli ?? '[Poli tidak ditemukan]' }} | {{ $jadwal->hari }} - {{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}
+                                         </option>
                                         @endforeach
                                     @endforeach
                                 </select>

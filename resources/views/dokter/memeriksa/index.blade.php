@@ -16,7 +16,7 @@
                             <th class="text-center">Jam</th>
                             <th class="text-center">Keluhan</th>
                             <th class="text-center">No Antrian</th>
-                            <th class="text-center">Aksi</th>
+                            <th class="text-center">Status</th> <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -31,13 +31,22 @@
                                 <td class="text-center">{{ $janji->keluhan }}</td>
                                 <td class="text-center">{{ $janji->no_antrian }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('dokter.memeriksa.create', $janji->id) }}" class="btn btn-primary btn-sm rounded-pill">Periksa</a>
+                                    {{-- Cek status pemeriksaan --}}
+                                    @if ($janji->periksa) <span class="badge badge-pill badge-success">Sudah Diperiksa</span>
+                                    @else
+                                        <span class="badge badge-pill badge-warning">Belum Diperiksa</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    {{-- Tombol aksi sesuai status --}}
+                                    @if ($janji->periksa) <a href="{{ route('dokter.memeriksa.edit', $janji->id) }}" class="btn btn-info btn-sm rounded-pill">Edit Pemeriksaan</a>
+                                    @else <a href="{{ route('dokter.memeriksa.create', $janji->id) }}" class="btn btn-primary btn-sm rounded-pill">Periksa</a>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-3">Belum ada janji periksa.</td>
-                            </tr>
+                                <td colspan="8" class="text-center text-muted py-3">Belum ada janji periksa.</td> </tr>
                         @endforelse
                     </tbody>
                 </table>
